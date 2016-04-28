@@ -686,6 +686,27 @@ class Compiler
     }
 
     /**
+     * @param   string  $database
+     * @param   string  $table
+     *
+     * @return  array
+     */
+    public function getPrimaryKeyColumns($database, $table)
+    {
+        $sql = 'SELECT ' . $this->wrap('column_name')
+            . ' FROM ' . $this->wrap('information_schema') . '.' . $this->wrap('key_column_usage')
+            . ' WHERE ' . $this->wrap('table_schema') . ' = ? AND ' .$this->wrap('table_name') . ' = ? '
+            . ' AND ' . $this->wrap('constraint_name') . ' = ? '
+            . ' ORDER BY ' . $this->wrap('ordinal_position') . ' ASC';
+
+        return array(
+            'sql' => $sql,
+            'params' => array($database, $table, 'primary')
+        );
+    }
+
+
+    /**
      * @param   CreateTable $schema
      * 
      * @return  array

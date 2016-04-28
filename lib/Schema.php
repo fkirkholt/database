@@ -39,6 +39,9 @@ class Schema
     /** @var    array   Column list */
     protected $columns = array();
 
+    /** @var    array   Primary keys list */
+    protected $primaryKeys = array();
+
     /**
      * Constructor
      *
@@ -164,6 +167,42 @@ class Schema
 
         return $names ? array_keys($this->columns[$table]) : $this->columns[$table];
     }
+
+    /**
+     * Get a the primary key columns that belog to the specified table
+     *
+     * @param   string $table
+     *
+     * @return  array
+     */
+    public function getPrimaryKeyColumns($table, $clear = false)
+    {
+        if ($clear) {
+            unset($this->primaryKeys[$table]);
+        }
+
+        if (!$this->hasTable($table, $clear)) {
+            return false;
+        }
+
+        if (!isset($this->primaryKeys[$table])) {
+            $compiler = $this->connection->schemaCompiler();
+
+            $database = $this->getCurrentDatabase();
+
+            $sql = $compiler->getPrimaryKeyColumns($database, $table);
+
+            $results = $this->connection
+                ->query($sql['sql'], $sql['params'])
+                ->fetchColumn()
+                ->all();
+
+            $this->primaryKeys[$table] = $results;
+        }
+
+        return $this->primaryKeys[$table];
+    }
+
 
     /**
      * Creates a new table
