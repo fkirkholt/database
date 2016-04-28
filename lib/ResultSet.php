@@ -202,6 +202,17 @@ class ResultSet
     }
 
     /**
+     * @param   int $col    0-indexed number of the column you wish to retrieve
+     *
+     * @return $this
+     */
+    public function fetchColumn($col = 0)
+    {
+        $this->statement->setFetchMode(PDO::FETCH_COLUMN, $col);
+        return $this;
+    }
+
+    /**
      * @param   string  $class
      * @param   array   $ctorargs   (optional)
      * 
