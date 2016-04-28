@@ -193,7 +193,7 @@ class Compiler
 
         foreach ($tables as $name => $alias) {
             if (is_string($name)) {
-                $sql[] = $this->wrap($name) . ' AS ' . $this->wrap($alias);
+                $sql[] = $this->wrap($name) . ' ' . $this->wrap($alias);
             } else {
                 $sql[] = $this->wrap($alias);
             }
