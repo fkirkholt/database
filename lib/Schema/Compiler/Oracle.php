@@ -243,4 +243,27 @@ class Oracle extends Compiler
             'params' => array($database, $table),
         );
     }
+
+    /**
+     * @param   string  $database
+     * @param   string  $table
+     *
+     * @return  array
+     */
+    public function getPrimaryKeyColumns($database, $table)
+    {
+        $sql = "SELECT cols.column_name
+                FROM all_constraints cons, all_cons_columns cols
+                WHERE cons.constraint_type = 'P'
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                AND cons.owner = ?
+                AND cols.table_name = ?
+                ORDER BY cols.position";
+
+        return array(
+            'sql' => $sql,
+            'params' => array($database, $table)
+        );
+    }
 }
